@@ -1,0 +1,140 @@
+using System;
+
+namespace GenericCalculator
+{
+    public abstract class OperationCalculator<T>
+    {
+        public abstract Func<T, T, T> Operation { get; }
+
+        public T PerformOperation(T num1, T num2)
+        {
+            return Operation(num1, num2);
+        }
+    }
+
+    public class AdditionCalculator : OperationCalculator<decimal>
+    {
+        public override Func<decimal, decimal, decimal> Operation => (number1, number2) => number1 + number2;
+    }
+
+    public class SubtractionCalculator : OperationCalculator<decimal>
+    {
+        public override Func<decimal, decimal, decimal> Operation => (number1, number2) => number1 - number2;
+    }
+
+    public class MultiplicationCalculator : OperationCalculator<decimal>
+    {
+        public override Func<decimal, decimal, decimal> Operation => (number1, number2) => number1 * number2;
+    }
+
+    public class DivisionCalculator : OperationCalculator<decimal>
+    {
+        public override Func<decimal, decimal, decimal> Operation => (number1, number2) =>
+        {
+            if (number2 == 0)
+                throw new DivideByZeroException();
+            return number1 / number2;
+        };
+    }
+
+    public class ConcatenationCalculator : OperationCalculator<string>
+    {
+        public override Func<string, string, string> Operation => (str1, str2) => str1 + str2;
+    }
+
+    public class Test
+    {
+        static void Main()
+        {
+            var additionCalculator = new AdditionCalculator();
+            var subtractionCalculator = new SubtractionCalculator();
+            var multiplicationCalculator = new MultiplicationCalculator();
+            var divisionCalculator = new DivisionCalculator();
+            var concatenationCalculator = new ConcatenationCalculator();
+
+            Console.WriteLine("Addition       : 1");
+            Console.WriteLine("Subtraction    : 2");
+            Console.WriteLine("Multiplication : 3");
+            Console.WriteLine("Division       : 4");
+            Console.WriteLine("StringConcat   : 5");
+            Console.WriteLine("Exit           : 6");
+
+            int choice;
+            bool isFinished = false;
+
+            do
+            {
+                try
+                {
+                    Console.WriteLine("Please enter the Choice");
+                    string choiceInput = Console.ReadLine();
+
+                    if (int.TryParse(choiceInput, out choice))
+                    {
+                        switch (choice)
+                        {
+                            case 1:
+                            case 2:
+                            case 3:
+                            case 4:
+                                Console.WriteLine("Enter first number");
+                                decimal num1 = decimal.Parse(Console.ReadLine());
+                                Console.WriteLine("Enter second number");
+                                decimal num2 = decimal.Parse(Console.ReadLine());
+                                decimal result = 0;
+
+                                switch (choice)
+                                {
+                                    case 1:
+                                        result = additionCalculator.PerformOperation(num1, num2);
+                                        break;
+                                    case 2:
+                                        result = subtractionCalculator.PerformOperation(num1, num2);
+                                        break;
+                                    case 3:
+                                        result = multiplicationCalculator.PerformOperation(num1, num2);
+                                        break;
+                                    case 4:
+                                        result = divisionCalculator.PerformOperation(num1, num2);
+                                        break;
+                                }
+
+                                Console.WriteLine($"Result: {result}");
+                                break;
+                            case 5:
+                                Console.WriteLine("Enter the First String");
+                                string str1 = Console.ReadLine();
+                                Console.WriteLine("Enter the Second String");
+                                string str2 = Console.ReadLine();
+                                string concatenatedString = concatenationCalculator.PerformOperation(str1, str2);
+                                Console.WriteLine($"Concatenated String: {concatenatedString}");
+                                break;
+                            case 6:
+                                isFinished = true;
+                                break;
+                            default:
+                                Console.WriteLine("Invalid choice. Please enter a number from 1 to 6.");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid choice. Please enter a number from 1 to 6.");
+                    }
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Invalid input. Please enter valid numbers.");
+                }
+                catch (DivideByZeroException)
+                {
+                    Console.WriteLine("Cannot divide by zero.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred: {ex.Message}");
+                }
+            } while (!isFinished);
+        }
+    }
+}
