@@ -1,0 +1,145 @@
+// Calculator class
+public class Calculator
+{
+    private decimal resultValue = 0;
+    private string operationPerformed = "";
+    private bool isOperationPerformed = false;
+
+    public decimal ResultValue => resultValue;
+
+    public string OperationPerformed => operationPerformed;
+
+    public bool IsOperationPerformed => isOperationPerformed;
+
+    public void PerformOperation(string operation, ref TextBox textBox_Result, ref Label labelCurrentOperation)
+    {
+        if (!string.IsNullOrEmpty(textBox_Result.Text) && !textBox_Result.Text.Equals("."))
+        {
+            switch (operationPerformed)
+            {
+                case "+":
+                    textBox_Result.Text = (resultValue + decimal.Parse(textBox_Result.Text)).ToString();
+                    break;
+                case "-":
+                    textBox_Result.Text = (resultValue - decimal.Parse(textBox_Result.Text)).ToString();
+                    break;
+                case "*":
+                    textBox_Result.Text = (resultValue * decimal.Parse(textBox_Result.Text)).ToString();
+                    break;
+                case "/":
+                    textBox_Result.Text = (resultValue / decimal.Parse(textBox_Result.Text)).ToString();
+                    break;
+                default:
+                    break;
+            }
+
+            resultValue = decimal.Parse(textBox_Result.Text);
+            labelCurrentOperation.Text = "";
+        }
+    }
+
+    public void PerformClick(Button button, ref TextBox textBox_Result)
+    {
+        if ((textBox_Result.Text == "0") || (isOperationPerformed))
+            textBox_Result.Clear();
+
+        isOperationPerformed = false;
+
+        if (button.Text == "." && !textBox_Result.Text.Contains("."))
+        {
+            textBox_Result.Text = textBox_Result.Text + button.Text;
+        }
+        else if (button.Text != ".")
+        {
+            textBox_Result.Text = textBox_Result.Text + button.Text;
+        }
+    }
+
+    public void OperatorClick(Button button, ref TextBox textBox_Result, ref Label labelCurrentOperation)
+    {
+        if (resultValue != 0)
+        {
+            PerformOperation(button.Text, ref textBox_Result, ref labelCurrentOperation);
+            operationPerformed = button.Text;
+            labelCurrentOperation.Text = resultValue + " " + operationPerformed;
+            isOperationPerformed = true;
+        }
+        else
+        {
+            operationPerformed = button.Text;
+            if (!string.IsNullOrEmpty(textBox_Result.Text))
+            {
+                try
+                {
+                    resultValue = decimal.Parse(textBox_Result.Text);
+                    isOperationPerformed = true;
+                    labelCurrentOperation.Text = resultValue + " " + operationPerformed;
+                }
+                catch (FormatException ex)
+                {
+                    // Handle the format exception (e.g., display an error message)
+                    MessageBox.Show("Input string is not in the correct format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    textBox_Result.Text = "0"; // Reset the textbox
+                }
+            }
+        }
+    }
+
+    public void Clear(ref TextBox textBox_Result)
+    {
+        textBox_Result.Text = "0";
+    }
+
+    public void ClearAll(ref TextBox textBox_Result)
+    {
+        textBox_Result.Text = "0";
+        resultValue = 0;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+public partial class Form1 : Form
+{
+    private Calculator calculator = new Calculator();
+
+    public Form1()
+    {
+        InitializeComponent();
+    }
+
+    private void button21_Click(object sender, EventArgs e)
+    {
+        calculator.PerformOperation(calculator.OperationPerformed, ref textBox_Result, ref labelCurrentOperation);
+    }
+
+    private void button_click(object sender, EventArgs e)
+    {
+        Button button = (Button)sender;
+        calculator.PerformClick(button, ref textBox_Result);
+    }
+
+    private void operator_click(object sender, EventArgs e)
+    {
+        Button button = (Button)sender;
+        calculator.OperatorClick(button, ref textBox_Result, ref labelCurrentOperation);
+    }
+
+    private void button6_Click(object sender, EventArgs e)
+    {
+        calculator.Clear(ref textBox_Result);
+    }
+
+    private void button11_Click(object sender, EventArgs e)
+    {
+        calculator.ClearAll(ref textBox_Result);
+    }
+}
