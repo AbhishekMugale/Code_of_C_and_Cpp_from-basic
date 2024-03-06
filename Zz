@@ -1,0 +1,65 @@
+// Calculator class
+public class Calculator
+{
+    private decimal resultValue = 0;
+    
+    public decimal ResultValue => resultValue;
+
+    public void PerformOperation(string operation, TextBox textBox_Result)
+    {
+        if (!string.IsNullOrEmpty(textBox_Result.Text))
+        {
+            switch (operation)
+            {
+                case "+":
+                    resultValue += decimal.Parse(textBox_Result.Text);
+                    break;
+                case "-":
+                    resultValue -= decimal.Parse(textBox_Result.Text);
+                    break;
+                case "*":
+                    resultValue *= decimal.Parse(textBox_Result.Text);
+                    break;
+                case "/":
+                    decimal divisor = decimal.Parse(textBox_Result.Text);
+                    if (divisor != 0)
+                    {
+                        resultValue /= divisor;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Cannot divide by zero.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            textBox_Result.Text = resultValue.ToString();
+        }
+    }
+
+    public void AppendText(string text, TextBox textBox_Result)
+    {
+        if (text == "." && textBox_Result.Text.Contains("."))
+        {
+            return;
+        }
+
+        if (textBox_Result.Text == "0" || textBox_Result.Text == "Error")
+        {
+            textBox_Result.Text = text;
+        }
+        else
+        {
+            textBox_Result.Text += text;
+        }
+    }
+
+    public void Clear(TextBox textBox_Result)
+    {
+        textBox_Result.Text = "0";
+        resultValue = 0;
+    }
+}
