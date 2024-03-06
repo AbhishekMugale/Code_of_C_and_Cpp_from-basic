@@ -1,0 +1,47 @@
+// Form1 class
+public partial class Form1 : Form
+{
+    private Calculator calculator = new Calculator();
+
+    public Form1()
+    {
+        InitializeComponent();
+    }
+
+    private void PerformOperation(string operation)
+    {
+        calculator.PerformOperation(operation, textBox_Result);
+    }
+
+    private void AppendText(string text)
+    {
+        calculator.AppendText(text, textBox_Result);
+    }
+
+    private void button21_Click(object sender, EventArgs e)
+    {
+        PerformOperation(calculator.OperationPerformed);
+    }
+
+    private void button_click(object sender, EventArgs e)
+    {
+        Button button = (Button)sender;
+        AppendText(button.Text);
+    }
+
+    private void operator_click(object sender, EventArgs e)
+    {
+        Button button = (Button)sender;
+        PerformOperation(button.Text);
+    }
+
+    private void button6_Click(object sender, EventArgs e)
+    {
+        calculator.Clear(textBox_Result);
+    }
+
+    private void button11_Click(object sender, EventArgs e)
+    {
+        calculator.Clear(textBox_Result);
+    }
+}
